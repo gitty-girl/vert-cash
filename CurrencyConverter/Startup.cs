@@ -29,7 +29,7 @@ namespace CurrencyConverter
                 var docFile = $"{PlatformServices.Default.Application.ApplicationName}.xml";
                 var filePath = Path.Combine(PlatformServices.Default.Application.ApplicationBasePath, docFile);
 
-                if (File.Exists((filePath)))
+                if (File.Exists(filePath))
                 {
                     config.IncludeXmlComments(filePath);
                 }
@@ -50,12 +50,12 @@ namespace CurrencyConverter
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseMvc();
-            app.UseSwagger();
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Converter API");
-            });
+            app.UseMvc()
+                .UseSwagger()
+                .UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Converter API");
+                });
         }
     }
 }

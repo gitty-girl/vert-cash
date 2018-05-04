@@ -26,10 +26,11 @@ namespace CurrencyConverter.APIs
         /// <response code="400">Bad request, see collection of errors for details</response>
         /// <response code="500">Internal server error, see message for details.</response>
         [HttpGet]
+        [Route("/ConvertToEuro")]
         [ProducesResponseType(typeof(double), (int) HttpStatusCode.OK)]
         [ProducesResponseType(typeof(string), (int) HttpStatusCode.BadRequest)]
         [ProducesResponseType(typeof(string), (int) HttpStatusCode.InternalServerError)]
-        public async Task<IActionResult> ConvertEuro(string currencyCode, double amount) =>
+        public async Task<IActionResult> ConvertToEuro(string currencyCode, double amount) =>
             await _service.ConvertEuro(currencyCode, amount).ToHttpResponseAsync();
     }
 }
