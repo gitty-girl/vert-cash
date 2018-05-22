@@ -20,6 +20,7 @@ namespace CurrencyConverter.ExecutionControl
                     return new ObjectResult(executionResult.GetExecutionErrors().First().Value) { StatusCode = (int)HttpStatusCode.InternalServerError };
             }
         }
+
         public static async Task<IActionResult> ToHttpResponseAsync<T>(this Task<ExecutionResult<T>> executionResultAsync)
         {
             var executionResult = await executionResultAsync;

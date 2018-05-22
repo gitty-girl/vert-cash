@@ -5,8 +5,6 @@ using CurrencyConverter.ExecutionControl;
 using CurrencyConverter.Infrastructure;
 using CurrencyConverter.Models;
 using CurrencyConverter.Models.Dtos;
-using CurrencyConverter.Repositories;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace CurrencyConverter.Services
@@ -66,8 +64,7 @@ namespace CurrencyConverter.Services
                     await _context.Messages.AddAsync(message);
                     author.Posts.Add(message);
                 }
-
-
+                
                 await _context.SaveChangesAsync();
 
                 return ExecutionResult.Success();

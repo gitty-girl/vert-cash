@@ -24,7 +24,7 @@ namespace CurrencyConverter.APIs
         /// </summary>
         /// <response code="400">Bad request, see collection of errors for details</response>
         /// <response code="500">Internal server error, see message for details.</response>
-        [HttpGet("seed")]
+        [HttpPost("seed")]
         [ProducesResponseType((int) HttpStatusCode.OK)]
         [ProducesResponseType(typeof(IDictionary<string, string>), (int) HttpStatusCode.BadRequest)]
         [ProducesResponseType(typeof(string), (int) HttpStatusCode.InternalServerError)]
