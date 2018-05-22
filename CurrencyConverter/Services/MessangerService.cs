@@ -1,52 +1,131 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using CurrencyConverter.ExecutionControl;
+using CurrencyConverter.Infrastructure;
 using CurrencyConverter.Models;
+using CurrencyConverter.Models.Dtos;
 using CurrencyConverter.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace CurrencyConverter.Services
 {
-    public class MessangerService
+    public class MessangerService : IMessangerService
     {
+        private readonly LocalContext _context;
+
+        public MessangerService(LocalContext context)
+        {
+            _context = context;
+        }
+
         public async Task<ExecutionResult<Message>> GetMessageAsync(int id)
         {
-            //get message from database
-            var message = new Message();
+            try
+            {
+                var message = await _context.Messages.Include(m => m.Replies).FirstOrDefaultAsync(m => m.Id == id);
 
-            if (message == null)
-                throw new Exception("Message not found");
+                if (message == null)
+                    throw new Exception("Message not found");
 
-            return ExecutionResult<Message>.Success(message);
+                return ExecutionResult<Message>.Success(message);
+            }
+            catch (Exception ex)
+            {
+                return new ExecutionResult<Message>(ExecutionResult.DomainFailedResult(new Dictionary<string, string>
+                {
+                    { "Bad Request", ex.Message }
+                }));
+            }
+            
         }
 
-        public async Task<ExecutionResult> PostMessageAsync(Message message)
+        public async Task<ExecutionResult> PostMessageAsync(MessageDto dto)
         {
-            //post message to database
+            try
+            {
+                var author = await _context.Users.FirstOrDefaultAsync(u => u.Id == dto.AuthorId);
+                var message = Message.Factory.CreateNew(dto);
 
-            return ExecutionResult.Success();
+                if (author == null)
+                    throw new Exception("Author not found");
+
+                if (dto.ParentMessageId != null && dto.ParentMessageId != 0)
+                {
+                    var parentMessage = await _context.Messages.FirstOrDefaultAsync(m => m.Id == dto.ParentMessageId);
+
+                    if (parentMessage == null)
+                        throw new Exception("Message with given ParentMessageId not found");
+
+                    parentMessage.Reply(message);
+                    author.Posts.Add(message);
+                }
+                else
+                {
+                    await _context.Messages.AddAsync(message);
+                    author.Posts.Add(message);
+                }
+
+
+                await _context.SaveChangesAsync();
+
+                return ExecutionResult.Success();
+            }
+            catch (Exception ex)
+            {
+                return ExecutionResult.DomainFailedResult(new Dictionary<string, string>
+                {
+                    { "Bad Request", ex.Message }
+                });
+            }
         }
 
-        public async Task<ExecutionResult> EditMessageAsync(int id, Message message)
+        public async Task<ExecutionResult> EditMessageAsync(int id, MessageDto dto)
         {
-            //get
-            var oldMessage = new Message();
+            try
+            {
+                var message = await _context.Messages.FirstOrDefaultAsync(m => m.Id == id);
 
-            //edit
-            oldMessage = message;
+                if (message == null)
+                    throw new Exception("Message not found");
 
-            //save 
+                message.Update(dto);
 
-            return ExecutionResult.Success();
+                await _context.SaveChangesAsync();
+
+                return ExecutionResult.Success();
+            }
+            catch (Exception ex)
+            {
+                return ExecutionResult.DomainFailedResult(new Dictionary<string, string>
+                {
+                    { "Bad Request", ex.Message }
+                });
+            }
         }
 
         public async Task<ExecutionResult> DeleteMessageAsync(int id)
         {
-            //get
+            try
+            {
+                var message = await _context.Messages.FirstOrDefaultAsync(m => m.Id == id);
 
-            //remove
+                if (message == null)
+                    throw new Exception("Message not found");
 
-            return ExecutionResult.Success();
+                _context.Messages.Remove(message);
+                await _context.SaveChangesAsync();
+
+                return ExecutionResult.Success();
+            }
+            catch (Exception ex)
+            {
+                return ExecutionResult.DomainFailedResult(new Dictionary<string, string>
+                {
+                    { "Bad Request", ex.Message }
+                });
+            }
         }
     }
 }

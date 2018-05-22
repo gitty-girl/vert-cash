@@ -3,6 +3,7 @@ using System.Net;
 using System.Threading.Tasks;
 using CurrencyConverter.ExecutionControl;
 using CurrencyConverter.Models;
+using CurrencyConverter.Models.Dtos;
 using CurrencyConverter.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,11 +14,11 @@ namespace CurrencyConverter.APIs
     [Route("api/messanger")]
     public class MessangerController : Controller
     {
-        private readonly MessangerService _service;
+        private readonly IMessangerService _service;
 
-        public MessangerController()
+        public MessangerController(IMessangerService service)
         {
-            _service = new MessangerService();
+            _service = service;
         }
 
         /// <summary>
@@ -36,15 +37,15 @@ namespace CurrencyConverter.APIs
         /// <summary>
         /// Creates a message
         /// </summary>
-        /// <param name="message">Data needed for message creation</param>
+        /// <param name="dto">Data needed for message creation</param>
         /// <response code="400">Bad request, see collection of errors for details</response>
         /// <response code="500">Internal server error, see message for details.</response>
         [HttpPost]
         [ProducesResponseType((int) HttpStatusCode.OK)]
         [ProducesResponseType(typeof(IDictionary<string, string>), (int) HttpStatusCode.BadRequest)]
         [ProducesResponseType(typeof(string), (int) HttpStatusCode.InternalServerError)]
-        public async Task<IActionResult> Post([FromBody] Message message) =>
-            await _service.PostMessageAsync(message).ToHttpResponseAsync();
+        public async Task<IActionResult> Post([FromBody] MessageDto dto) =>
+            await _service.PostMessageAsync(dto).ToHttpResponseAsync();
 
 
         /// <summary>
@@ -58,8 +59,8 @@ namespace CurrencyConverter.APIs
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(IDictionary<string, string>), (int)HttpStatusCode.BadRequest)]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
-        public async Task<IActionResult> Update([FromRoute]int id, [FromBody]Message message) =>
-            await _service.EditMessageAsync(id, message).ToHttpResponseAsync();
+        public async Task<IActionResult> Update([FromRoute]int id, [FromBody]MessageDto dto) =>
+            await _service.EditMessageAsync(id, dto).ToHttpResponseAsync();
 
         /// <summary>
         /// Deletes a lead

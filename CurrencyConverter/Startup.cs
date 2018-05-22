@@ -1,7 +1,10 @@
 ﻿using System.IO;
+using CurrencyConverter.Infrastructure;
 using CurrencyConverter.Serialization;
+using CurrencyConverter.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.PlatformAbstractions;
@@ -35,6 +38,11 @@ namespace CurrencyConverter
                 }
             });
             services.AddMvc();
+
+            var connection = @"Server=(localdb)\mssqllocaldb;Database=EFGetStarted.AspNetCore.NewDb;Trusted_Connection=True;ConnectRetryCount=0";
+            services.AddDbContext<LocalContext>(options => options.UseSqlServer(connection));
+            services.AddTransient<IMessangerService, MessangerService>();
+            services.AddTransient<IUserService, UserService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
