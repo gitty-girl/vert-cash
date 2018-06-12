@@ -20,7 +20,6 @@
 
   <ItemGroup>
     <Folder Include="ExecutionControl\" />
-    <Folder Include="Seeding\" />
     <Folder Include="Serialization\" />
   </ItemGroup>
 

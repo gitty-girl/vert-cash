@@ -11,8 +11,8 @@ using System;
 namespace CurrencyConverter.Migrations
 {
     [DbContext(typeof(LocalContext))]
-    [Migration("20180522185047_DbsetsRename")]
-    partial class DbsetsRename
+    [Migration("20180612154409_InitialModel")]
+    partial class InitialModel
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -26,7 +26,7 @@ namespace CurrencyConverter.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int?>("AuthorId");
+                    b.Property<int>("AuthorId");
 
                     b.Property<string>("Body");
 
@@ -46,7 +46,9 @@ namespace CurrencyConverter.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Name");
+                    b.Property<DateTime>("DateCreated");
+
+                    b.Property<string>("FullName");
 
                     b.HasKey("Id");
 
@@ -56,8 +58,9 @@ namespace CurrencyConverter.Migrations
             modelBuilder.Entity("CurrencyConverter.Models.Message", b =>
                 {
                     b.HasOne("CurrencyConverter.Models.User", "Author")
-                        .WithMany()
-                        .HasForeignKey("AuthorId");
+                        .WithMany("Posts")
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("CurrencyConverter.Models.Message")
                         .WithMany("Replies")

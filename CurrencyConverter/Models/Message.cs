@@ -10,11 +10,11 @@ namespace CurrencyConverter.Models
 
         public string Body { get; private set; }
 
-        public virtual User Author { get; private set; }
+        public User Author { get; private set; }
 
         public int AuthorId { get; private set; }
 
-        public virtual List<Message> Replies { get; private set; }
+        public List<Message> Replies { get; private set; }
 
         private Message()
         {

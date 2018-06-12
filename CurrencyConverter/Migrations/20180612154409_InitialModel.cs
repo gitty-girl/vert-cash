@@ -10,63 +10,64 @@ namespace CurrencyConverter.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Blogs",
+                name: "Users",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(nullable: true)
+                    DateCreated = table.Column<DateTime>(nullable: false),
+                    FullName = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Blogs", x => x.Id);
+                    table.PrimaryKey("PK_Users", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Posts",
+                name: "Messages",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    AuthorId = table.Column<int>(nullable: true),
+                    AuthorId = table.Column<int>(nullable: false),
                     Body = table.Column<string>(nullable: true),
                     MessageId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Posts", x => x.Id);
+                    table.PrimaryKey("PK_Messages", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Posts_Blogs_AuthorId",
+                        name: "FK_Messages_Users_AuthorId",
                         column: x => x.AuthorId,
-                        principalTable: "Blogs",
+                        principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Posts_Posts_MessageId",
+                        name: "FK_Messages_Messages_MessageId",
                         column: x => x.MessageId,
-                        principalTable: "Posts",
+                        principalTable: "Messages",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Posts_AuthorId",
-                table: "Posts",
+                name: "IX_Messages_AuthorId",
+                table: "Messages",
                 column: "AuthorId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Posts_MessageId",
-                table: "Posts",
+                name: "IX_Messages_MessageId",
+                table: "Messages",
                 column: "MessageId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Posts");
+                name: "Messages");
 
             migrationBuilder.DropTable(
-                name: "Blogs");
+                name: "Users");
         }
     }
 }

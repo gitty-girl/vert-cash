@@ -47,7 +47,6 @@ namespace CurrencyConverter.APIs
         public async Task<IActionResult> Post([FromBody] MessageDto dto) =>
             await _service.PostMessageAsync(dto).ToHttpResponseAsync();
 
-
         /// <summary>
         /// Updates a message
         /// </summary>
@@ -63,9 +62,9 @@ namespace CurrencyConverter.APIs
             await _service.EditMessageAsync(id, dto).ToHttpResponseAsync();
 
         /// <summary>
-        /// Deletes a lead
+        /// Deletes a message
         /// </summary>
-        /// <param name="id">id of the lead</param>
+        /// <param name="id">id of the message</param>
         /// <response code="400">Bad request, see collection of errors for details</response>
         /// <response code="500">Internal server error, see message for details.</response>
         [HttpDelete("{id}")]

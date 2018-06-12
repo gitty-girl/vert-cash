@@ -36,7 +36,6 @@ namespace CurrencyConverter.Services
                     { "Bad Request", ex.Message }
                 }));
             }
-            
         }
 
         public async Task<ExecutionResult> PostMessageAsync(MessageDto dto)
@@ -57,14 +56,11 @@ namespace CurrencyConverter.Services
                         throw new Exception("Message with given ParentMessageId not found");
 
                     parentMessage.Reply(message);
-                    author.Posts.Add(message);
                 }
                 else
-                {
                     await _context.Messages.AddAsync(message);
-                    author.Posts.Add(message);
-                }
-                
+
+                author.Posts.Add(message);
                 await _context.SaveChangesAsync();
 
                 return ExecutionResult.Success();
@@ -88,6 +84,7 @@ namespace CurrencyConverter.Services
                     throw new Exception("Message not found");
 
                 message.Update(dto);
+                _context.Messages.Update(message);
 
                 await _context.SaveChangesAsync();
 

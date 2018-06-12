@@ -45,7 +45,9 @@ namespace CurrencyConverter.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Name");
+                    b.Property<DateTime>("DateCreated");
+
+                    b.Property<string>("FullName");
 
                     b.HasKey("Id");
 
